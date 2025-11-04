@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Icon Generator</title>
+</head>
+<body>
+  <h1>Générateur d'icônes</h1>
+  <p>Ouvrez cette page dans Chrome, cliquez droit sur chaque canvas, et "Enregistrer l'image sous..."</p>
+
+  <div style="margin: 20px 0;">
+    <h3>Icon 16x16</h3>
+    <canvas id="icon16" width="16" height="16" style="border: 1px solid #ccc; image-rendering: pixelated; width: 64px; height: 64px;"></canvas>
+  </div>
+
+  <div style="margin: 20px 0;">
+    <h3>Icon 48x48</h3>
+    <canvas id="icon48" width="48" height="48" style="border: 1px solid #ccc; width: 96px; height: 96px;"></canvas>
+  </div>
+
+  <div style="margin: 20px 0;">
+    <h3>Icon 128x128</h3>
+    <canvas id="icon128" width="128" height="128" style="border: 1px solid #ccc; width: 128px; height: 128px;"></canvas>
+  </div>
+
+  <script>
+    // Fonction pour dessiner l'icône
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+
+      // Fond dégradé
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#667eea');
+      gradient.addColorStop(1, '#764ba2');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+
+      // Cercle blanc au centre (représente le bouton d'enregistrement)
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size * 0.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cercle rouge au centre (point d'enregistrement)
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bordure arrondie
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = size * 0.05;
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size * 0.35, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Dessiner les 3 icônes
+    drawIcon(document.getElementById('icon16'));
+    drawIcon(document.getElementById('icon48'));
+    drawIcon(document.getElementById('icon128'));
+
+    // Fonction pour télécharger automatiquement
+    function downloadIcon(canvasId, filename) {
+      const canvas = document.getElementById(canvasId);
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // Auto-télécharger après 1 seconde
+    setTimeout(() => {
+      downloadIcon('icon16', 'icon16.png');
+      setTimeout(() => downloadIcon('icon48', 'icon48.png'), 300);
+      setTimeout(() => downloadIcon('icon128', 'icon128.png'), 600);
+    }, 1000);
+  </script>
+</body>
+</html>
