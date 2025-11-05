@@ -52,9 +52,10 @@
         <span>Incrustation webcam (bas gauche)</span>
       </label>
       <div id="webcamDeviceContainer" style="display: none; margin-top: 10px;">
-        <select id="webcamSelect" class="device-select">
-          <option value="">Sélectionner une webcam...</option>
+        <select id="webcamSelect" class="device-select" disabled>
+          <option value="default" selected>Webcam par défaut</option>
         </select>
+        <p style="font-size: 11px; opacity: 0.8; margin-top: 5px;">La webcam par défaut de votre système sera utilisée</p>
       </div>
     </div>
 
@@ -73,9 +74,10 @@
       </label>
 
       <div id="micDeviceContainer" style="display: none; margin-top: 10px;">
-        <select id="micSelect" class="device-select">
-          <option value="">Sélectionner un microphone...</option>
+        <select id="micSelect" class="device-select" disabled>
+          <option value="default" selected>Microphone par défaut</option>
         </select>
+        <p style="font-size: 11px; opacity: 0.8; margin-top: 5px;">Le microphone par défaut de votre système sera utilisé</p>
       </div>
     </div>
 
@@ -105,6 +107,7 @@
     <!-- Informations -->
     <div class="info">
       <p>💡 Enregistrement 4K illimité avec incrustation webcam</p>
+      <p style="font-size: 11px; margin-top: 8px; opacity: 0.9;">⚠️ Si la webcam ne fonctionne pas : fermez les autres applications qui l'utilisent (Zoom, Teams, Skype, etc.)</p>
     </div>
   </div>
 
