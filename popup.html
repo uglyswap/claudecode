@@ -3,35 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Screen & Audio Recorder</title>
+  <title>Screen & Audio Recorder 4K</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
-    <h1>🎥 Screen Recorder</h1>
+    <h1>🎥 Recorder 4K Pro</h1>
 
+    <!-- Sélection de la résolution -->
     <div class="settings">
-      <h3>Sources Audio</h3>
+      <h3>📐 Résolution vidéo</h3>
+      <div class="resolution-options">
+        <label class="radio-container">
+          <input type="radio" name="resolution" value="1080" checked>
+          <span>1080p (Full HD)</span>
+        </label>
+        <label class="radio-container">
+          <input type="radio" name="resolution" value="1440">
+          <span>1440p (2K)</span>
+        </label>
+        <label class="radio-container">
+          <input type="radio" name="resolution" value="2160">
+          <span>2160p (4K)</span>
+        </label>
+      </div>
+    </div>
 
+    <!-- Sélection du framerate -->
+    <div class="settings">
+      <h3>🎬 Images par seconde</h3>
+      <div class="framerate-options">
+        <label class="radio-container">
+          <input type="radio" name="framerate" value="30" checked>
+          <span>30 FPS</span>
+        </label>
+        <label class="radio-container">
+          <input type="radio" name="framerate" value="60">
+          <span>60 FPS</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Options de webcam -->
+    <div class="settings">
+      <h3>📹 Webcam</h3>
       <label class="checkbox-container">
-        <input type="checkbox" id="microphoneCheck" checked>
-        <span>🎤 Microphone</span>
+        <input type="checkbox" id="webcamCheck">
+        <span>Incrustation webcam (bas gauche)</span>
       </label>
+      <div id="webcamDeviceContainer" style="display: none; margin-top: 10px;">
+        <select id="webcamSelect" class="device-select">
+          <option value="">Sélectionner une webcam...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sélection des sources audio -->
+    <div class="settings">
+      <h3>🔊 Sources Audio</h3>
 
       <label class="checkbox-container">
         <input type="checkbox" id="systemAudioCheck" checked>
-        <span>🔊 Audio du navigateur</span>
+        <span>Audio système (onglet)</span>
       </label>
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="microphoneCheck">
+        <span>Microphone</span>
+      </label>
+
+      <div id="micDeviceContainer" style="display: none; margin-top: 10px;">
+        <select id="micSelect" class="device-select">
+          <option value="">Sélectionner un microphone...</option>
+        </select>
+      </div>
     </div>
 
+    <!-- Statut -->
     <div class="status" id="status">
       <p>Prêt à enregistrer</p>
     </div>
 
+    <!-- Timer -->
     <div class="timer" id="timer" style="display: none;">
       <span id="timerDisplay">00:00:00</span>
     </div>
 
+    <!-- Contrôles -->
     <div class="controls">
       <button id="startBtn" class="btn btn-start">
         <span class="btn-icon">⏺</span>
@@ -44,8 +102,9 @@
       </button>
     </div>
 
+    <!-- Informations -->
     <div class="info">
-      <p>💡 Cette extension capture votre écran + audio pour vos démos</p>
+      <p>💡 Enregistrement 4K illimité avec incrustation webcam</p>
     </div>
   </div>
 

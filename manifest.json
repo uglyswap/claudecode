@@ -1,13 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "Screen & Audio Recorder",
-  "version": "1.0.0",
-  "description": "Enregistrez votre écran, micro et audio du navigateur pour vos démos d'agent IA vocal",
+  "name": "Screen & Audio Recorder 4K",
+  "version": "2.0.0",
+  "description": "Enregistrez votre écran en 4K sans limite de durée avec incrustation webcam et choix des périphériques audio",
   "permissions": [
     "tabCapture",
     "activeTab",
-    "scripting"
+    "scripting",
+    "downloads",
+    "notifications",
+    "storage"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
