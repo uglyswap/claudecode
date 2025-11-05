@@ -298,20 +298,35 @@ async function startRecording() {
       } catch (error) {
         console.error('Erreur webcam:', error);
 
-        let errorMsg = '⚠️ Erreur webcam: ';
+        let errorMsg = '';
         if (error.name === 'NotAllowedError') {
-          errorMsg += 'Permission refusée. Autorisez l\'accès à la webcam.';
+          errorMsg = '🔒 Permission webcam bloquée\n\n' +
+                     '👉 Cliquez sur l\'icône 🔒 ou 🎥 dans la barre d\'adresse\n' +
+                     '👉 Sélectionnez "Toujours autoriser"\n' +
+                     '👉 Rechargez la popup et réessayez\n\n' +
+                     'Ou décochez "Incrustation webcam" si vous n\'en avez pas besoin';
         } else if (error.name === 'NotFoundError') {
-          errorMsg += 'Aucune webcam détectée sur cet ordinateur.';
+          errorMsg = '❌ Aucune webcam détectée sur cet ordinateur.\n\n' +
+                     '👉 Vérifiez qu\'une webcam est branchée\n' +
+                     '👉 Ou décochez "Incrustation webcam"';
         } else if (error.name === 'NotReadableError') {
-          errorMsg += 'Webcam déjà utilisée par une autre application.';
+          errorMsg = '⚠️ Webcam déjà utilisée\n\n' +
+                     '👉 Fermez Zoom, Teams, Skype, Discord\n' +
+                     '👉 Fermez les autres onglets utilisant la webcam\n' +
+                     '👉 Réessayez';
         } else if (error.name === 'OverconstrainedError') {
-          errorMsg += 'Périphérique sélectionné non disponible. Utilisez "Webcam par défaut".';
+          errorMsg = '⚠️ Périphérique non disponible\n\n' +
+                     '👉 Sélectionnez "Webcam par défaut"';
         } else {
-          errorMsg += error.message;
+          errorMsg = '❌ Erreur: ' + error.message;
         }
 
-        updateStatus(errorMsg, true);
+        // Afficher dans la console pour le debug
+        console.error('Message complet:', errorMsg);
+
+        // Afficher le message (remplacer \n par <br> pour l'HTML)
+        statusDiv.innerHTML = `<p style="color: #fca5a5; white-space: pre-line; text-align: left; font-size: 11px; line-height: 1.4;">${errorMsg}</p>`;
+
         cleanup();
         return;
       }
@@ -362,20 +377,35 @@ async function startRecording() {
       } catch (error) {
         console.error('Erreur microphone:', error);
 
-        let errorMsg = '⚠️ Erreur microphone: ';
+        let errorMsg = '';
         if (error.name === 'NotAllowedError') {
-          errorMsg += 'Permission refusée. Autorisez l\'accès au microphone.';
+          errorMsg = '🔒 Permission microphone bloquée\n\n' +
+                     '👉 Cliquez sur l\'icône 🔒 ou 🎤 dans la barre d\'adresse\n' +
+                     '👉 Sélectionnez "Toujours autoriser"\n' +
+                     '👉 Rechargez la popup et réessayez\n\n' +
+                     'Ou décochez "Microphone" si vous n\'en avez pas besoin';
         } else if (error.name === 'NotFoundError') {
-          errorMsg += 'Aucun microphone détecté sur cet ordinateur.';
+          errorMsg = '❌ Aucun microphone détecté sur cet ordinateur.\n\n' +
+                     '👉 Vérifiez qu\'un micro est branché (casque, webcam, etc.)\n' +
+                     '👉 Ou décochez "Microphone"';
         } else if (error.name === 'NotReadableError') {
-          errorMsg += 'Microphone déjà utilisé par une autre application.';
+          errorMsg = '⚠️ Microphone déjà utilisé\n\n' +
+                     '👉 Fermez Zoom, Teams, Skype, Discord\n' +
+                     '👉 Fermez les autres onglets utilisant le micro\n' +
+                     '👉 Réessayez';
         } else if (error.name === 'OverconstrainedError') {
-          errorMsg += 'Périphérique sélectionné non disponible. Utilisez "Microphone par défaut".';
+          errorMsg = '⚠️ Périphérique non disponible\n\n' +
+                     '👉 Sélectionnez "Microphone par défaut"';
         } else {
-          errorMsg += error.message;
+          errorMsg = '❌ Erreur: ' + error.message;
         }
 
-        updateStatus(errorMsg, true);
+        // Afficher dans la console pour le debug
+        console.error('Message complet:', errorMsg);
+
+        // Afficher le message (remplacer \n par <br> pour l'HTML)
+        statusDiv.innerHTML = `<p style="color: #fca5a5; white-space: pre-line; text-align: left; font-size: 11px; line-height: 1.4;">${errorMsg}</p>`;
+
         cleanup();
         return;
       }
