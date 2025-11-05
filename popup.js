@@ -174,12 +174,18 @@ async function refreshDeviceLabels() {
     // Restaurer la sélection
     if (currentMic === 'default') micSelect.value = 'default';
 
-    updateStatus('Périphériques mis à jour ✓');
+    updateStatus('✅ Noms des périphériques chargés !');
     setTimeout(() => updateStatus('Prêt à enregistrer'), 2000);
 
   } catch (error) {
     console.error('Erreur permissions:', error);
-    updateStatus('⚠️ Permission refusée pour lister les périphériques', true);
+
+    if (error.name === 'NotAllowedError') {
+      updateStatus('ℹ️ Pas de problème ! Utilisez les périphériques par défaut');
+    } else {
+      updateStatus('⚠️ Impossible d\'obtenir les noms. Utilisez "par défaut"', true);
+    }
+
     setTimeout(() => updateStatus('Prêt à enregistrer'), 3000);
   }
 }
