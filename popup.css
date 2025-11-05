@@ -87,11 +87,38 @@ h1 {
   font-size: 13px;
   cursor: pointer;
   outline: none;
+  margin-bottom: 8px;
 }
 
 .device-select option {
   background: #764ba2;
   color: #fff;
+}
+
+.btn-refresh {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.btn-refresh:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-refresh:active {
+  transform: translateY(0);
 }
 
 .status {

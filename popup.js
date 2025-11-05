@@ -34,6 +34,10 @@ const micSelect = document.getElementById('micSelect');
 const webcamDeviceContainer = document.getElementById('webcamDeviceContainer');
 const micDeviceContainer = document.getElementById('micDeviceContainer');
 
+// Boutons de rafraîchissement
+const refreshWebcamBtn = document.getElementById('refreshWebcamBtn');
+const refreshMicBtn = document.getElementById('refreshMicBtn');
+
 // ========================================
 // Initialisation
 // ========================================
@@ -58,20 +62,126 @@ function setupEventListeners() {
   microphoneCheck.addEventListener('change', (e) => {
     micDeviceContainer.style.display = e.target.checked ? 'block' : 'none';
   });
+
+  // Boutons de rafraîchissement
+  refreshWebcamBtn.addEventListener('click', refreshDeviceLabels);
+  refreshMicBtn.addEventListener('click', refreshDeviceLabels);
 }
 
 // ========================================
 // Énumération des périphériques
 // ========================================
 async function enumerateDevices() {
-  // Ne demander AUCUNE permission ici
-  // Juste initialiser les listes avec l'option par défaut
+  try {
+    // Lister les périphériques sans demander de permissions (labels génériques)
+    const devices = await navigator.mediaDevices.enumerateDevices();
 
-  // Webcam : option par défaut uniquement
-  webcamSelect.innerHTML = '<option value="default" selected>Webcam par défaut</option>';
+    // Webcams
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    webcamSelect.innerHTML = '<option value="default" selected>Webcam par défaut</option>';
 
-  // Microphone : option par défaut uniquement
-  micSelect.innerHTML = '<option value="default" selected>Microphone par défaut</option>';
+    videoDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.text = device.label || `Webcam ${index + 1}`;
+      webcamSelect.appendChild(option);
+    });
+
+    // Microphones
+    const audioDevices = devices.filter(device => device.kind === 'audioinput');
+    micSelect.innerHTML = '<option value="default" selected>Microphone par défaut</option>';
+
+    audioDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.text = device.label || `Microphone ${index + 1}`;
+      micSelect.appendChild(option);
+    });
+
+    // Ajouter un message si pas de labels
+    if (videoDevices.length > 0 && !videoDevices[0].label) {
+      const hintOption = document.createElement('option');
+      hintOption.disabled = true;
+      hintOption.text = '───────────────────────';
+      webcamSelect.appendChild(hintOption);
+
+      const hintOption2 = document.createElement('option');
+      hintOption2.disabled = true;
+      hintOption2.text = '💡 Cliquez "Voir les noms" pour identifier vos périphériques';
+      webcamSelect.appendChild(hintOption2);
+    }
+
+    if (audioDevices.length > 0 && !audioDevices[0].label) {
+      const hintOption = document.createElement('option');
+      hintOption.disabled = true;
+      hintOption.text = '───────────────────────';
+      micSelect.appendChild(hintOption);
+
+      const hintOption2 = document.createElement('option');
+      hintOption2.disabled = true;
+      hintOption2.text = '💡 Cliquez "Voir les noms" pour identifier vos périphériques';
+      micSelect.appendChild(hintOption2);
+    }
+
+  } catch (error) {
+    console.warn('Erreur énumération:', error);
+    webcamSelect.innerHTML = '<option value="default" selected>Webcam par défaut</option>';
+    micSelect.innerHTML = '<option value="default" selected>Microphone par défaut</option>';
+  }
+}
+
+// Rafraîchir avec les vrais noms des périphériques
+async function refreshDeviceLabels() {
+  try {
+    // Demander les permissions pour obtenir les labels
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    stream.getTracks().forEach(track => track.stop());
+
+    // Relister avec les vrais noms
+    const devices = await navigator.mediaDevices.enumerateDevices();
+
+    // Sauvegarder les valeurs actuelles
+    const currentWebcam = webcamSelect.value;
+    const currentMic = micSelect.value;
+
+    // Webcams
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    webcamSelect.innerHTML = '<option value="default">Webcam par défaut</option>';
+
+    videoDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.text = device.label || `Webcam ${index + 1}`;
+      if (device.deviceId === currentWebcam) option.selected = true;
+      webcamSelect.appendChild(option);
+    });
+
+    // Restaurer la sélection
+    if (currentWebcam === 'default') webcamSelect.value = 'default';
+
+    // Microphones
+    const audioDevices = devices.filter(device => device.kind === 'audioinput');
+    micSelect.innerHTML = '<option value="default">Microphone par défaut</option>';
+
+    audioDevices.forEach((device, index) => {
+      const option = document.createElement('option');
+      option.value = device.deviceId;
+      option.text = device.label || `Microphone ${index + 1}`;
+      if (device.deviceId === currentMic) option.selected = true;
+      micSelect.appendChild(option);
+    });
+
+    // Restaurer la sélection
+    if (currentMic === 'default') micSelect.value = 'default';
+
+    updateStatus('Périphériques mis à jour ✓');
+    setTimeout(() => updateStatus('Prêt à enregistrer'), 2000);
+
+  } catch (error) {
+    console.error('Erreur permissions:', error);
+    updateStatus('⚠️ Permission refusée pour lister les périphériques', true);
+    setTimeout(() => updateStatus('Prêt à enregistrer'), 3000);
+  }
 }
 
 // ========================================
@@ -161,12 +271,21 @@ async function startRecording() {
     // Étape 2: Capturer la webcam si demandé
     if (webcamCheck.checked) {
       try {
-        // Configuration vidéo simple - utiliser la webcam par défaut
+        const webcamDeviceId = webcamSelect.value;
+
+        // Configuration vidéo
+        const videoConfig = {
+          width: { ideal: 320 },
+          height: { ideal: 240 }
+        };
+
+        // Ajouter le deviceId si ce n'est pas "default"
+        if (webcamDeviceId && webcamDeviceId !== 'default') {
+          videoConfig.deviceId = { exact: webcamDeviceId };
+        }
+
         webcamStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 320 },
-            height: { ideal: 240 }
-          },
+          video: videoConfig,
           audio: false
         });
         updateStatus('Webcam capturée ✓');
@@ -180,6 +299,8 @@ async function startRecording() {
           errorMsg += 'Aucune webcam détectée sur cet ordinateur.';
         } else if (error.name === 'NotReadableError') {
           errorMsg += 'Webcam déjà utilisée par une autre application.';
+        } else if (error.name === 'OverconstrainedError') {
+          errorMsg += 'Périphérique sélectionné non disponible. Utilisez "Webcam par défaut".';
         } else {
           errorMsg += error.message;
         }
@@ -211,13 +332,22 @@ async function startRecording() {
     // Ajouter le microphone si demandé
     if (microphoneCheck.checked) {
       try {
-        // Configuration audio simple - utiliser le micro par défaut
+        const micDeviceId = micSelect.value;
+
+        // Configuration audio
+        const audioConfig = {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        };
+
+        // Ajouter le deviceId si ce n'est pas "default"
+        if (micDeviceId && micDeviceId !== 'default') {
+          audioConfig.deviceId = { exact: micDeviceId };
+        }
+
         micStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
+          audio: audioConfig
         });
 
         const micSource = audioContext.createMediaStreamSource(micStream);
@@ -233,6 +363,8 @@ async function startRecording() {
           errorMsg += 'Aucun microphone détecté sur cet ordinateur.';
         } else if (error.name === 'NotReadableError') {
           errorMsg += 'Microphone déjà utilisé par une autre application.';
+        } else if (error.name === 'OverconstrainedError') {
+          errorMsg += 'Périphérique sélectionné non disponible. Utilisez "Microphone par défaut".';
         } else {
           errorMsg += error.message;
         }

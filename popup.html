@@ -52,10 +52,10 @@
         <span>Incrustation webcam (bas gauche)</span>
       </label>
       <div id="webcamDeviceContainer" style="display: none; margin-top: 10px;">
-        <select id="webcamSelect" class="device-select" disabled>
+        <select id="webcamSelect" class="device-select">
           <option value="default" selected>Webcam par défaut</option>
         </select>
-        <p style="font-size: 11px; opacity: 0.8; margin-top: 5px;">La webcam par défaut de votre système sera utilisée</p>
+        <button id="refreshWebcamBtn" class="btn-refresh">🔄 Voir les noms</button>
       </div>
     </div>
 
@@ -74,10 +74,10 @@
       </label>
 
       <div id="micDeviceContainer" style="display: none; margin-top: 10px;">
-        <select id="micSelect" class="device-select" disabled>
+        <select id="micSelect" class="device-select">
           <option value="default" selected>Microphone par défaut</option>
         </select>
-        <p style="font-size: 11px; opacity: 0.8; margin-top: 5px;">Le microphone par défaut de votre système sera utilisé</p>
+        <button id="refreshMicBtn" class="btn-refresh">🔄 Voir les noms</button>
       </div>
     </div>
 
