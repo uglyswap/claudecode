@@ -16,6 +16,7 @@ const timerDiv = document.getElementById('timer');
 const timerDisplay = document.getElementById('timerDisplay');
 const microphoneCheck = document.getElementById('microphoneCheck');
 const systemAudioCheck = document.getElementById('systemAudioCheck');
+const warningKeepOpen = document.getElementById('warningKeepOpen');
 
 // Événements
 startBtn.addEventListener('click', startRecording);
@@ -155,13 +156,14 @@ async function startRecording() {
       cleanup();
     };
 
-    // Démarrer l'enregistrement
-    mediaRecorder.start(1000); // Chunk chaque seconde
+    // Démarrer l'enregistrement avec un timeslice plus court pour éviter la perte de données
+    mediaRecorder.start(100); // Chunk chaque 100ms pour capturer les enregistrements courts
 
     // Mettre à jour l'interface
     startBtn.style.display = 'none';
     stopBtn.style.display = 'block';
     statusDiv.classList.add('recording-indicator');
+    warningKeepOpen.style.display = 'block'; // Afficher l'avertissement
     updateStatus('🔴 Enregistrement en cours...');
     startTimer();
 
@@ -254,13 +256,28 @@ function cleanup() {
   startBtn.style.display = 'block';
   stopBtn.style.display = 'none';
   statusDiv.classList.remove('recording-indicator');
+  warningKeepOpen.style.display = 'none'; // Cacher l'avertissement
   stopTimer();
 
   // Réinitialiser le MediaRecorder
   mediaRecorder = null;
 }
 
-// Nettoyer quand la popup se ferme
-window.addEventListener('unload', () => {
+// Sauvegarder et nettoyer quand la popup se ferme
+window.addEventListener('beforeunload', (e) => {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    // Si un enregistrement est en cours, tenter de le sauvegarder
+    e.preventDefault();
+
+    // Arrêter l'enregistrement immédiatement
+    if (mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+
+    // Sauvegarder les données si disponibles
+    if (recordedChunks.length > 0) {
+      saveRecording();
+    }
+  }
   cleanup();
 });

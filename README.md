@@ -103,9 +103,15 @@ claudecode/
 - ✅ Fermez les applications inutiles pour libérer des ressources
 - ✅ Réduisez la taille de la fenêtre/onglet à enregistrer
 
-## 📝 Limitations
+## 📝 Limitations et Améliorations
 
-- L'enregistrement s'arrête si vous fermez la popup de l'extension
+### ✅ Améliorations récentes (v1.0.1)
+- **Sauvegarde automatique** : L'enregistrement est maintenant sauvegardé automatiquement même si la popup se ferme accidentellement
+- **Avertissement visible** : Un message d'avertissement vous rappelle de garder la popup ouverte pendant l'enregistrement
+- **Capture améliorée** : Meilleure capture des enregistrements courts grâce à un timeslice optimisé (100ms)
+
+### Limitations
+- Pour une fiabilité maximale, gardez la popup ouverte pendant l'enregistrement (l'avertissement vous le rappellera)
 - Le format WebM peut ne pas être compatible avec certains lecteurs vidéo anciens
 - L'audio système (hors navigateur) ne peut pas être capturé pour des raisons de sécurité
 

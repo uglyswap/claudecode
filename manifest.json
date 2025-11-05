@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Screen & Audio Recorder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Enregistrez votre écran, micro et audio du navigateur pour vos démos d'agent IA vocal",
   "permissions": [
     "tabCapture",
